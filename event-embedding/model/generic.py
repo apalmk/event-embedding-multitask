@@ -1,15 +1,21 @@
 ''' This module contains generic model of role-filler.
 
     Author: Tony Hong
+
+    Update notes: Converting to Python 3 / TF 2
+    Updated: 2020-10-09
+    Updated by: Jake Stamell / Anjani Prasad
 '''
 import os
 import re
-import cPickle
+import pickle # Changed from cPickle (team1-change)
 
-from keras.models import load_model
+import tensorflow as tf # Importing tensorflow (team1-change)
+from tf.keras.models import load_model # Added tf (team1-change)
 
 import config
 from utils import get_reverse_map
+
 
 
 class GenericModel(object):
@@ -67,7 +73,7 @@ class GenericModel(object):
             "epoch":                    epoch,
         }
         with open(description_file, 'wb') as f:
-            cPickle.dump(description, f, protocol=cPickle.HIGHEST_PROTOCOL)
+            pickle.dump(description, f, protocol=pickle.HIGHEST_PROTOCOL)  # Changed from cPickle (team1-change)
 
         if re.search('final', file_name) or re.search('A2', file_name):
             self.model.save_weights(model_file)
