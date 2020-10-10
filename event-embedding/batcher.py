@@ -10,8 +10,9 @@ from collections import OrderedDict
 
 
 import numpy as np
-from keras.preprocessing.sequence import pad_sequences
-from keras.utils.np_utils import to_categorical
+import tensorflow as tf # Importing tensorflow (team1-change)
+# from tf.keras.preprocessing.sequence import pad_sequences # Added tf, commented out since unused (team1-change)
+from tf.keras.utils import to_categorical # Added tf, updated the module this pulls from (team1-change)
 
 
 def random_lines(f, file_length, batch_size, rng, max_line_len=372):
@@ -26,14 +27,14 @@ def random_lines(f, file_length, batch_size, rng, max_line_len=372):
             yield line
 
 
-def get_NN_batch(x_w_i, x_r_i, y_w_i, y_r_i):
+def get_NN_batch(x_w_i, x_r_i, y_w_i, y_r_i): # QUESTION: Would it be more efficient to directly create these as tensors instead of numpy arrays? (team1-change)
     return ([np.asarray(x_w_i, dtype=np.int32),
     np.asarray(x_r_i, dtype=np.int32),
     np.asarray(y_r_i, dtype=np.int32)],
 
     [np.asarray(y_w_i, dtype=np.int32)])
 
-def get_MT_batch(x_w_i, x_r_i, y_w_i, y_r_i):
+def get_MT_batch(x_w_i, x_r_i, y_w_i, y_r_i): # QUESTION: Would it be more efficient to directly create these as tensors instead of numpy arrays? (team1-change)
     return ([np.asarray(x_w_i, dtype=np.int32),
     np.asarray(x_r_i, dtype=np.int32),
     np.asarray(y_w_i, dtype=np.int32),
@@ -69,7 +70,7 @@ def generator(file_name, model_name, unk_word_id, unk_role_id, missing_word_id, 
             n_neg_samples = 0
 
             for line in lines:
-                d = eval(line)
+                d = eval(line) # QUESTION: What is being evaluated here? (team1-change)
                 roles, words = map(list, zip(*d.items()))
 
                 # non_missing_inputs = [i for i, r in enumerate(roles) if words[i] != missing_word_id and r not in [5, 6]]
@@ -105,7 +106,7 @@ def generator(file_name, model_name, unk_word_id, unk_role_id, missing_word_id, 
                     # generate k negative samples by corrupting one non missing input role
                     for _ in range(neg):
 
-                        noise_role = target_role
+                        noise_role = target_role # QUESTION: Why is noise role always the same as target_role while noise_word is random? (team1-change)
                         noise_word = np.random.randint(missing_word_id) # missing_word_id == len(vocabulary)
                         #noise_word = np.random.choice(word_ids, p=unigram_counts[noise_role])
 
@@ -137,7 +138,7 @@ def generator(file_name, model_name, unk_word_id, unk_role_id, missing_word_id, 
                         n_neg_samples = 0
 
 
-
+# QUESTION: What is different about this vs the above generator? Seems to do the same thing for MT output (team1-change)
 def get_minibatch(file_name, unk_word_id, unk_role_id, missing_word_id, n_roles, random=False, rng=None, batch_size=0, neg=0):
     """Generates k noise samples for target role + 1 positive sample from data. Noise and positive samples share inputs"""
 
@@ -210,7 +211,7 @@ def get_minibatch(file_name, unk_word_id, unk_role_id, missing_word_id, n_roles,
                         np.asarray(x_r_i, dtype=np.int32),
                         np.asarray(y_w_i, dtype=np.int32),
                         np.asarray(y_r_i, dtype=np.int32)],
-                        [np.asarray(to_categorical(y_w_i, missing_word_id+2), dtype=np.int32),
+                        [np.asarray(to_categorical(y_w_i, missing_word_id+2), dtype=np.int32), # QUESTION: What's the point of the to_categorical here when it's then converted to a numpy array? (team1-change)
                         np.asarray(to_categorical(y_r_i, n_roles), dtype=np.int32)],
                         )
 

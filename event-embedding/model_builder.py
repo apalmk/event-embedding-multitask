@@ -1,7 +1,7 @@
 # model_builder.py
 import re
 import os
-import cPickle
+import pickle # Switching to python3 pickle (team1-change)
 
 from model import *
 
@@ -9,7 +9,7 @@ def load_description(file_dir, model_name):
         description_file = os.path.join(file_dir, model_name + "_description")        
 
         with open(description_file, 'rb') as f:
-            description = cPickle.load(f)
+            description = pickle.load(f) # Switching to python3 pickle (team1-change)
 
         return description
 
