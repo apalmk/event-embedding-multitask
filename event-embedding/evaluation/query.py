@@ -8,10 +8,10 @@
 
 import os
 import sys
-import time
-import cPickle
-import gzip
-import random
+#import time #Commented out as not used anywhere (team1-change)
+import pickle as cPickle #Changed the pickle import (team1-change)
+#import gzip #Commented out as not used anywhere (team1-change)
+#import random #Commented out as not used anywhere (team1-change)
 
 import numpy
 
@@ -36,7 +36,7 @@ def query(model_name, experiment_name, inputs, target):
     # net.model.summary()
     # print net.model.get_layer(name="embedding_2").get_weights()[0]
 
-    print net.role_vocabulary
+    print(net.role_vocabulary) #Added paranthesis to the print statement (team1-change)
     print("unk_word_id", net.unk_word_id)
     print("missing_word_id", net.missing_word_id)
     # net.set_0_bias()
@@ -63,7 +63,7 @@ def query(model_name, experiment_name, inputs, target):
     reverse_vocabulary = utils.get_reverse_map(net.word_vocabulary)
     reverse_role_vocabulary = utils.get_reverse_map(net.role_vocabulary)    
 
-    print reverse_role_vocabulary
+    print(reverse_role_vocabulary) #Added paranthesis to the print statment (team1-change)
 
     raw_words = dict((reverse_role_vocabulary[r], reverse_vocabulary[net.missing_word_id]) for r in net.role_vocabulary.values())
 
@@ -73,7 +73,7 @@ def query(model_name, experiment_name, inputs, target):
     
     # print raw_words
     # print len(raw_words)
-    assert len(raw_words) == len(net.role_vocabulary)
+    assert len(raw_words) == len(net.role_vocabulary) #Assertion not accompanied by error message (team1-change)
     # print repr(raw_words)
 
     # n = int(sys.argv[3])    
@@ -84,7 +84,7 @@ def query(model_name, experiment_name, inputs, target):
     for r, w in raw_words.items():
         input_roles_words[net.role_vocabulary[r]] = utils.input_word_index(net.word_vocabulary, w, net.unk_word_id, warn_unk=True)
 
-    print input_roles_words, t_r
+    print(input_roles_words, t_r) #Added the paranthesis for print statement (team1-change)
     input_roles_words.pop(t_r[0])
 
     # default_roles_words = dict((r, net.missing_word_id) for r in (net.role_vocabulary.values()))
@@ -104,7 +104,7 @@ def query(model_name, experiment_name, inputs, target):
     print(x_w_i, x_r_i, y_w_i, y_r_i)
 
     p_w = net.p_words(x_w_i, x_r_i, y_w_i, y_r_i, batch_size=1, verbose=0)[0]
-    print ('p_t_w: ', p_w)
+    print('p_t_w: ', p_w)
 
     resultlist = predicted_word_indices
     # print resultlist
@@ -116,7 +116,7 @@ def query(model_name, experiment_name, inputs, target):
         n = numpy.round(p / 0.005)
         fb = numpy.floor(n)
         hb = n % 2
-        print u"{:<5} {:7.6f} {:<20} ".format(i+1, float(p), reverse_vocabulary[int(t_w_i)]) + u"\u2588" * int(fb) + u"\u258C" * int(hb)
+        print(u"{:<5} {:7.6f} {:<20} ".format(i+1, float(p), reverse_vocabulary[int(t_w_i)]) + u"\u2588" * int(fb) + u"\u258C" * int(hb)) #() to print (team1-change)
     
 
 if __name__ == "__main__":

@@ -4,12 +4,13 @@ import re
 import os
 import sys
 import time
-import cPickle
-import gzip
-import random
+import pickle as cPickle #Changed the import of pickle (team1-change)
+#import gzip #Commented as not used anywhere (team1-change)
+#import random #Commented as not used anywhere (team1-change)
 
 import numpy as np
-from keras.models import Model
+import tensorflow as tf #Impirting tensorflow (team1-change)
+from tf.keras.models import Model
 
 # Configuration of environment
 SRC_DIR = os.path.dirname((os.path.dirname(os.path.abspath(__file__))))
@@ -56,7 +57,7 @@ def stats(net, confusionM):
     # avg_R = (recall[:-1] * gold[:-1] / gold.sum()).sum()
     # avg_F1 = (2 * avg_P * avg_R) / (avg_P + avg_R)
 
-    print "Dir: %.2f \t %.2f \t %.2f" % (dir_P, dir_R, dir_F1)
+    print("Dir: %.2f \t %.2f \t %.2f" % (dir_P, dir_R, dir_F1)) #added () to print (team1-change)
     # print "Avg: %.2f \t %.2f \t %.2f" % (avg_P, avg_R, avg_F1)
 
     return dir_P, dir_R, dir_F1, precision, recall, F1
@@ -71,12 +72,12 @@ def evaluate(model_name, experiment_name, batch_size):
     net.load(MODEL_PATH, MODEL_NAME, description)
 
     n_roles = len(net.role_vocabulary)
-    print net.role_vocabulary
+    print(net.role_vocabulary) #Added () to print (team1-change)
     print("unk_word_id", net.unk_word_id)
     print("missing_word_id", net.missing_word_id)
 
     net.model.summary()
-    print net.model.metrics_names
+    print(net.model.metrics_names) #Added () to print (team1-change)
     reverse_role_vocabulary = utils.get_reverse_map(net.role_vocabulary)
 
     test_sample_size = config.OCT_TEST_SIZE
@@ -84,8 +85,8 @@ def evaluate(model_name, experiment_name, batch_size):
     # # DEBUG
     # test_steps = 10
 
-    print 'Testing...'
-    test_start = time.clock()
+    print('Testing...') #Added () to print (team1-change)
+    test_start = time.process_time() #Changed from time.clock() (team1-change) 
 
     # Always use generator in Keras
     if re.search('NAME_WHICH_YOU_NEED_OLD_BATCHER', experiment_name):
@@ -131,7 +132,7 @@ def evaluate(model_name, experiment_name, batch_size):
             if true_r == result_role[i]:
                 result_list.append(1)
         batch_n += 1
-        print batch_n
+        print(batch_n) #Added () to print (team1-change)
         if batch_n >= test_steps:
             break
 
@@ -139,19 +140,19 @@ def evaluate(model_name, experiment_name, batch_size):
         neg_log_likelihood_role = np.mean(np.array(v))
         ppl_role[k] = np.exp(neg_log_likelihood_role)
 
-    print "Confusion Matrix: "
-    print "    A0,  A1, LOC, TMP, MNR,   V, <UNKNOWN>"
-    print confusionM
+    print("Confusion Matrix: ") #Added () to print (team1-change)
+    print("    A0,  A1, LOC, TMP, MNR,   V, <UNKNOWN>") #Added () to print (team1-change)
+    print(confusionM) #Added () to print (team1-change)
     np.savetxt('confusionM_' + experiment_name + '.csv', confusionM, delimiter = ',')
     np.savetxt('result_list_' + experiment_name + '.csv', result_list, delimiter = ',')
 
     stats(net, confusionM)
 
-    print "Loss(neg_log_likelihood) by role: "
+    print("Loss(neg_log_likelihood) by role: ") #Added () to print (team1-change)
     for r in ppl_role.keys():
         print (reverse_role_vocabulary[r], np.log(ppl_role[r]))
 
-    print "PPL by role: "
+    print("PPL by role: ") #Added () to print (team1-change)
     for r in ppl_role.keys():
         print (reverse_role_vocabulary[r], ppl_role[r])
 
@@ -164,8 +165,8 @@ def evaluate(model_name, experiment_name, batch_size):
             f_out.write('] \n')
         f_out.write(']')
 
-    test_end = time.clock()
-    print 'test time: %f, sps: %f' % (test_end - test_start, test_steps * batch_size / (test_end - test_start))
+    test_end = time.process_time() #Changed from time.clock() (team1-change) 
+    print('test time: %f, sps: %f' % (test_end - test_start, test_steps * batch_size / (test_end - test_start)))  #Added () to print (team1-change)
 
 
 if __name__ == "__main__":

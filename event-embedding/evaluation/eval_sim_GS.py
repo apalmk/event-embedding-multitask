@@ -1,12 +1,16 @@
 import os
 import sys
-import cPickle
+
+#Commented out as not being used
+#import pickle as cPickle  #Importing pickle for Python 3.x (team1-change)
+
 import re
 
 import numpy as np
 from scipy.spatial.distance import cosine
 from scipy.stats import spearmanr
-from keras.models import Model
+import tensorflow as tf     #imported tensorflow(team1-change)
+from tf.keras.models import Model #Changed the keras import (team1-change)
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
 
@@ -170,9 +174,9 @@ def eval_GS(model_name, experiment_name, eval_file_name, model=None, print_resul
     correlation, pvalue = spearmanr(scores, similarities)
 
     if print_result:
-        print "Total number of samples: %d" % len(scores)
-        print "Spearman correlation: %.4f; 2-tailed p-value: %.10f" % (correlation, pvalue)
-        print "High: %.2f; Low: %.2f" % (np.mean(hi_similarities), np.mean(lo_similarities))
+        print("Total number of samples: %d" % len(scores)) #Added paranthesis to the print statements (team1-change)
+        print("Spearman correlation: %.4f; 2-tailed p-value: %.10f" % (correlation, pvalue)) #Added paranthesis to the print statements (team1-change)
+        print("High: %.2f; Low: %.2f" % (np.mean(hi_similarities), np.mean(lo_similarities))) #Added paranthesis to the print statements (team1-change)
 
         # import pylab
         # pylab.scatter(scores, similarities)

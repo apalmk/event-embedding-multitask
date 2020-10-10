@@ -2,13 +2,14 @@ import re
 import os
 import sys
 import time
-import cPickle
+import pickle as cPickle
 import gzip
-import random
+#import random #Commented as not used anywhere (team1-change)
 
 import numpy as np
 import scipy.stats as st
-from keras.models import Model
+import tensorflow as tf #Imported tensorflow (team1-change)
+from tf.keras.models import Model
 
 # Configuration of environment
 SRC_DIR = os.path.dirname((os.path.dirname(os.path.abspath(__file__))))
@@ -214,8 +215,8 @@ def stats(net, confusionM):
 
     print ("gold: ", gold)
     print ("gold_sum: ", gold.sum())
-    print "Dir: %.2f \t %.2f \t %.2f" % (dir_P, dir_R, dir_F1)
-    print "Avg: %.2f \t %.2f \t %.2f" % (avg_P, avg_R, avg_F1)
+    print("Dir: %.2f \t %.2f \t %.2f" % (dir_P, dir_R, dir_F1)) #Added () to print (team1-change)
+    print("Avg: %.2f \t %.2f \t %.2f" % (avg_P, avg_R, avg_F1)) #Added () to print (team1-change)
 
     return dir_P, dir_R, dir_F1, precision, recall, F1
 
@@ -234,7 +235,7 @@ def evaluate(model_name, experiment_name, test_name, batch_size, VR_SP_SRL=True,
     reverse_role_vocabulary = utils.get_reverse_map(net.role_vocabulary)
     # net.set_0_bias()
 
-    print net.role_vocabulary
+    print(net.role_vocabulary) #Added () to print (team1-change)
     print("unk_word_id", net.unk_word_id)
     print("missing_word_id", net.missing_word_id)
 
@@ -253,9 +254,9 @@ def evaluate(model_name, experiment_name, test_name, batch_size, VR_SP_SRL=True,
     # # DEBUG
     # test_steps = 10
 
-    print 'Testing ' + test_name + ' ...'
-    print 'VR_SP_SRL: ' + str(VR_SP_SRL)
-    test_start = time.clock()
+    print('Testing ' + test_name + ' ...') #Added () to print (team1-change)
+    print('VR_SP_SRL: ' + str(VR_SP_SRL)) #Added () to print (team1-change)
+    test_start = time.process_time() #changed from time.clock() (team1-change)
 
     # if re.search('NNRF_1e8', experiment_name) or re.search('MTRF_dev', experiment_name):
     #     test_gen = get_minibatch(DATA_PATH + "NN_test", net.unk_word_id, net.unk_role_id, net.missing_word_id, 
@@ -335,17 +336,17 @@ def evaluate(model_name, experiment_name, test_name, batch_size, VR_SP_SRL=True,
     #     ppl_role[k] = np.exp(neg_log_likelihood_role)
 
     # obtain ZeroR baseline
-    print confusionM
+    print(confusionM) #Added () to print (team1-change)
     majority = 1
     if majority_baseline == True:
         for i in range(7):
             confusionM[i][majority] = confusionM[i][:].sum()
             confusionM[i][majority-1] = 0 
             confusionM[i][majority+1:] = 0 
-    print confusionM
+    print(confusionM) #Added () to print (team1-change)
 
     dir_P, dir_R, dir_F1, precision, recall, F1 = stats(net, confusionM)
-    print "Dir: %.2f \t %.2f \t %.2f" % (dir_P, dir_R, dir_F1)
+    print("Dir: %.2f \t %.2f \t %.2f" % (dir_P, dir_R, dir_F1)) #added () to print (team1-change)
 
     # np.savetxt('confusionM_' + experiment_name + '.' + test_name.strip('.dat') + '.csv', confusionM, delimiter = ',')
     # np.savetxt('output_' + experiment_name + '.' + test_name.strip('.dat') + '.csv', output_list, delimiter = ',')
@@ -369,8 +370,8 @@ def evaluate(model_name, experiment_name, test_name, batch_size, VR_SP_SRL=True,
 
 
 
-    test_end = time.clock()
-    print 'test time: %f, sps: %f' % (test_end - test_start, test_steps * batch_size / (test_end - test_start))
+    test_end = time.process_time() #Changed from time.clock() (team1-change)
+    print('test time: %f, sps: %f' % (test_end - test_start, test_steps * batch_size / (test_end - test_start))) #Added () to print (team1-change)
 
     if bootstrapping:
         P_mean, P_std, R_mean, R_std, F1_mean, F1_std = bootstrap(experiment_name, test_name, net, n_roles, output_list=output_list)
