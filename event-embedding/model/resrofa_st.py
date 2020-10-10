@@ -148,7 +148,7 @@ class NNRF_ResROFA(GenericModel):
             (Only for reference, can be removed.)
         """
         top_words_lists = self.top_words(i_w, i_r, t_r, topN, batch_size, verbose)
-        print type(top_words_lists)
+        print(type(top_words_lists)) # Updated to python3 syntax (team1-change)
         result = []
         for i in range(batch_size):
             top_words_list = top_words_lists[i]
