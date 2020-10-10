@@ -211,7 +211,7 @@ def get_minibatch(file_name, unk_word_id, unk_role_id, missing_word_id, n_roles,
                         np.asarray(x_r_i, dtype=np.int32),
                         np.asarray(y_w_i, dtype=np.int32),
                         np.asarray(y_r_i, dtype=np.int32)],
-                        [np.asarray(to_categorical(y_w_i, missing_word_id+2), dtype=np.int32), # QUESTION: What's the point of the to_categorical here when it's then converted to a numpy array? (team1-change)
+                        [np.asarray(to_categorical(y_w_i, missing_word_id+2), dtype=np.int32), # QUESTION: What's the point of the to_categorical here? When do we need sparse inputs? (team1-change)
                         np.asarray(to_categorical(y_r_i, n_roles), dtype=np.int32)],
                         )
 
