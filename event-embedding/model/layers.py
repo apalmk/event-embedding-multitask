@@ -7,9 +7,9 @@
     Ref: Ottokar Tilk, Event participant modelling with neural networks, EMNLP 2016
 '''
 
-
-from keras import backend as K
-from keras.layers import Embedding, Dropout, Dense, Lambda, Add, Multiply, Dot, Masking, LSTM, GRU
+import tensorflow as tf # Importing tensorflow (team1-change)
+from tf.keras import backend as K # Added tf (team1-change)
+from tf.keras.layers import Embedding, Dropout, Dense, Lambda, Add, Multiply, Dot, Masking, LSTM, GRU # Added tf (team1-change)
 
 from embeddings import role_based_word_embedding
 
@@ -47,7 +47,7 @@ def target_word_hidden(inputs, target_role, n_word_vocab, n_role_vocab, emb_init
         output_shape=(n_factors_cls,))(target_role_embedding)
     
     # context_emb after linear projection
-    weighted_context_embedding = Dense(n_factors_cls, 
+    weighted_context_embedding = Dense(n_factors_cls, # QUESTION: what's the point of the linear transformation? (team1-change)
         activation='linear', 
         use_bias=False,
         input_shape=(n_hidden, ))(inputs)
@@ -124,7 +124,7 @@ def input_hidden(input_words, input_roles, n_word_vocab, n_role_vocab, emb_init,
         missing_word_id:    the id used as place-holder for the role without a word appearing
         n_factors_emb:      tensor factorization number
         n_hidden:           number of hidden units
-        n_sample:           number of samples, useful when there are negative samples
+        n_sample:           number of samples, useful when there are negative samples # QUESTION: what is number of samples/negative samples? (team1-change)
         mask_zero:          bool, zero out the weight of missing word
         using_dropout:      bool, using drop-out layer or not
         dropout_rate:       rate of drop-out layer
@@ -139,7 +139,7 @@ def input_hidden(input_words, input_roles, n_word_vocab, n_role_vocab, emb_init,
     hidden = role_based_word_embedding(input_words, input_roles, n_word_vocab, n_role_vocab, emb_init, 
         missing_word_id, n_factors_emb, mask_zero, using_dropout, dropout_rate)
 
-    if a_target:
+    if a_target: # QUESTION: What is a_target controlling? (team1-change) 
         # fully connected layer, output shape is (batch_size, n_sample, n_hidden)
         output = Dense(n_hidden, 
             activation=activation, 

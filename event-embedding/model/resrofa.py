@@ -6,11 +6,12 @@
 '''
 
 import numpy as np
-from keras import backend as K
-from keras.layers import Input, Embedding, Dropout, Dense, Lambda, Add, Multiply, Masking
-from keras.initializers import glorot_uniform
-from keras.layers.advanced_activations import PReLU
-from keras.models import Model, load_model
+import tensorflow as tf # Importing tensorflow (team1-change)
+from tf.keras import backend as K # Added tf (team1-change)
+from tf.keras.layers import Input, Embedding, Dropout, Dense, Lambda, Add, Multiply, Masking # Added tf (team1-change)
+from tf.keras.initializers import glorot_uniform # Added tf (team1-change)
+from tf.keras.layers.advanced_activations import PReLU # Added tf (team1-change)
+from tf.keras.models import Model, load_model # Added tf (team1-change)
 
 from embeddings import factored_embedding
 from layers import target_word_hidden, target_role_hidden
@@ -32,20 +33,20 @@ class MTRFv4Res(GenericModel):
 
         n_factors_cls = n_hidden
 
-        # each input is a fixed window of frame set, each word correspond to one role
-        input_words = Input(shape=(input_length, ), dtype='int32', name='input_words')
-        input_roles = Input(shape=(input_length, ), dtype='int32', name='input_roles')
-        target_word = Input(shape=(1, ), dtype='int32', name='target_word')
-        target_role = Input(shape=(1, ), dtype='int32', name='target_role')
+        # each input is a fixed window of frame set, each word correspond to one role # QUESTION: Does position matter for inputs? Looks like it's ignored here (team1-change)
+        input_words = Input(shape=(input_length, ), dtype=tf.uint32, name='input_words') # Switched dtype to tf specific (team1-change)
+        input_roles = Input(shape=(input_length, ), dtype=tf.uint32, name='input_roles') # Switched dtype to tf specific (team1-change)
+        target_word = Input(shape=(1, ), dtype=tf.uint32, name='target_word') # Switched dtype to tf specific (team1-change)
+        target_role = Input(shape=(1, ), dtype=tf.uint32, name='target_role') # Switched dtype to tf specific (team1-change)
 
-        emb_init = glorot_uniform()
+        emb_init = glorot_uniform() # TODO: Look into the different types of initializations (team1-change)
         
         # word embedding; shape is (batch_size, input_length, n_factors_emb)
         word_embedding = Embedding(n_word_vocab, n_factors_emb, 
             embeddings_initializer=emb_init,
             name='org_word_embedding')(input_words)
 
-        # a hack zeros out the missing word inputs
+        # a hack zeros out the missing word inputs # QUESTION: why do we need to apply the mask if the input_length already has -1 included? (team1-change)
         weights = np.ones((n_word_vocab, n_factors_emb))
         weights[missing_word_id] = 0
         mask = Embedding(n_word_vocab, n_factors_emb, 
@@ -202,7 +203,7 @@ class MTRFv4Res(GenericModel):
             (Only for reference, can be removed.)
         """
         top_words_lists = self.top_words(i_w, i_r, t_r, topN, batch_size, verbose)
-        print type(top_words_lists)
+        print(type(top_words_lists)) # Updated to python3 syntax (team1-change)
         result = []
         for i in range(batch_size):
             top_words_list = top_words_lists[i]

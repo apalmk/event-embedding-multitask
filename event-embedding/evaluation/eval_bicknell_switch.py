@@ -1,9 +1,9 @@
 import os
 import sys
-import time
-import cPickle
-import gzip
-import random
+# import time # Commenting out since unused (team1-change)
+# import pickle # Commenting out since unused and switching to python3 pickle (team1-change)
+# import gzip # Commenting out since unused (team1-change)
+# import random # Commenting out since unused (team1-change)
 
 import numpy
 from scipy.stats import spearmanr
@@ -34,7 +34,7 @@ def eval_bicknell_switch(model_name, experiment_name, evaluation, model=None, pr
     bias = net.set_0_bias()
 
     if print_result:
-        print net.role_vocabulary
+        print(net.role_vocabulary) # Updated to python3 syntax (team1-change)
 
     eval_data_file = os.path.join(RF_EVAL_PATH, evaluation + '.txt')
 
@@ -45,8 +45,8 @@ def eval_bicknell_switch(model_name, experiment_name, evaluation, model=None, pr
     oov_count = 0
 
     if print_result:
-        print eval_data_file
-        print "="*60
+        print(eval_data_file) # Updated to python3 syntax (team1-change)
+        print("="*60) # Updated to python3 syntax (team1-change)
 
     dataset = numpy.genfromtxt(eval_data_file, dtype=str, delimiter='\t', usecols=[0,1,2,3,4])
 
@@ -77,9 +77,9 @@ def eval_bicknell_switch(model_name, experiment_name, evaluation, model=None, pr
         
         if A1_correct not in net.word_vocabulary or A1_incorrect not in net.word_vocabulary:
             if A1_correct not in net.word_vocabulary and print_result:
-                print "%s MISSING FROM VOCABULARY. SKIPPING..." % A1_correct
+                print(f"{A1_correct} MISSING FROM VOCABULARY. SKIPPING...") # Updated to python3 syntax and f-string (team1-change)
             if A1_incorrect not in net.word_vocabulary and print_result:
-                print "%s MISSING FROM VOCABULARY. SKIPPING..." % A1_incorrect
+                print(f"{A1_incorrect} MISSING FROM VOCABULARY. SKIPPING...") # Updated to python3 syntax and f-string (team1-change)
         else:
             roles = net.role_vocabulary.values()
             del roles[net.unk_role_id]
@@ -110,7 +110,7 @@ def eval_bicknell_switch(model_name, experiment_name, evaluation, model=None, pr
     num_total = 0
     
     if print_result:
-        print "context", "correct", "incorrect", "P(correct)", "P(incorrect)", "bicnell_correct", "bicnell_incorrect"
+        print("context", "correct", "incorrect", "P(correct)", "P(incorrect)", "bicnell_correct", "bicnell_incorrect") # Updated to python3 syntax (team1-change)
     
     result_list = []
     
@@ -122,7 +122,7 @@ def eval_bicknell_switch(model_name, experiment_name, evaluation, model=None, pr
         p_incorrect = p[1]
             
         if print_result:
-            print context, a1[0], a1[1], p_correct, p_incorrect, bicknell[0], bicknell[1]
+            print(context, a1[0], a1[1], p_correct, p_incorrect, bicknell[0], bicknell[1]) # Updated to python3 syntax (team1-change)
         
         if p_correct > p_incorrect:
             result_list.append(1)
@@ -137,21 +137,21 @@ def eval_bicknell_switch(model_name, experiment_name, evaluation, model=None, pr
     accuracy = float(num_correct)/float(num_samples)
 
     if print_result:
-        print "Number of lines %d" % num_samples
-        print "Baseline Lenci11 is 43/64=0.671875"
-        print "Final score of theano model is %d/%d=%.6f" % (num_correct, num_samples, accuracy)
+        print(f"Number of lines {num_samples}") # Updated to python3 syntax and f-string (team1-change)
+        print("Baseline Lenci11 is 43/64=0.671875") # Updated to python3 syntax (team1-change)
+        print(f"Final score of theano model is {num_correct}/{num_samples}={accuracy:.6f}") # Updated to python3 syntax and f-string (team1-change)
         
-    print result_list
+    print(result_list) # Updated to python3 syntax (team1-change)
 
 
     if switch_test and print_result:
-        print "\nSwitch A0/A1 TEST"
+        print("\nSwitch A0/A1 TEST") # Updated to python3 syntax (team1-change)
 
         input_words = []
         input_roles = []
         for i in range(1):
             roles = net.role_vocabulary.values()
-            print net.unk_role_id
+            print(net.unk_role_id) # Updated to python3 syntax (team1-change)
             roles.remove(net.unk_role_id)
 
             input_role_word_pairs = dict((r, net.missing_word_id) for r in roles)
@@ -173,7 +173,7 @@ def eval_bicknell_switch(model_name, experiment_name, evaluation, model=None, pr
         )
         x_w_i, x_r_i, y_w_i, y_r_i = a0_test
         p0 = net.p_words(x_w_i, x_r_i, y_w_i, y_r_i)
-        print p0
+        print(p0) # Updated to python3 syntax (team1-change)
 
         a1_test = (
                     numpy.asarray(input_words, dtype=numpy.int64),
@@ -183,12 +183,12 @@ def eval_bicknell_switch(model_name, experiment_name, evaluation, model=None, pr
         )
         x_w_i, x_r_i, y_w_i, y_r_i = a1_test
         p1 = net.p_words(x_w_i, x_r_i, y_w_i, y_r_i)
-        print p1
+        print(p1) # Updated to python3 syntax (team1-change)
 
-        print "man buy", p0[0]
-        print "buy man", p1[0]
-        print "car buy", p0[1]
-        print "buy car", p1[1]
+        print("man buy", p0[0]) # Updated to python3 syntax (team1-change)
+        print("buy man", p1[0]) # Updated to python3 syntax (team1-change)
+        print("car buy", p0[1]) # Updated to python3 syntax (team1-change)
+        print("buy car", p1[1]) # Updated to python3 syntax (team1-change)
 
     net.set_bias(bias)
 

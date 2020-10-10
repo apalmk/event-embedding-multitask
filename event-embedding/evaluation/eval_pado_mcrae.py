@@ -1,10 +1,10 @@
 # coding: utf-8
 import os
 import sys
-import time
-import cPickle
-import gzip
-import random
+# import time # Commenting out since unused (team1-change)
+# import pickle # Commenting out since unused and switching to python3 pickle (team1-change)
+# import gzip # Commenting out since unused (team1-change)
+# import random # Commenting out since unused (team1-change)
 
 import numpy
 from scipy.stats import spearmanr
@@ -46,7 +46,7 @@ def eval_pado_mcrae(model_name, experiment_name, evaluation, model=None, print_r
         net.role_vocabulary["<UNKNOWN>"] = len(net.role_vocabulary) - 1
 
     if print_result:
-        print net.role_vocabulary
+        print(net.role_vocabulary) # Updated to python3 syntax (team1-change)
         print("unk_word_id", net.unk_word_id)
         print("missing_word_id", net.missing_word_id)
 
@@ -95,8 +95,8 @@ def eval_pado_mcrae(model_name, experiment_name, evaluation, model=None, print_r
     plist = []
 
     if print_result:
-        print eval_data_file
-        print "="* 60
+        print(eval_data_file) # Updated to python3 syntax (team1-change)
+        print("="* 60) # Updated to python3 syntax (team1-change)
 
     with open(eval_data_file, 'r') as f, \
             open(result_file, 'w') as f_out:
@@ -118,7 +118,7 @@ def eval_pado_mcrae(model_name, experiment_name, evaluation, model=None, print_r
             tr_i = net.role_vocabulary.get(propbank_map[tr], net.unk_role_id)
 
             if tw_i == net.unk_word_id:
-                print w, tr, tw
+                print(w, tr, tw) # Updated to python3 syntax (team1-change)
                 oov_count[tr] = oov_count.get(tr, 0) + 1
                 f_out.write(line + "\tnan\n")
                 continue
@@ -147,7 +147,7 @@ def eval_pado_mcrae(model_name, experiment_name, evaluation, model=None, print_r
             f_out.write(line + "\t%s\n" % s)
 
     result = dict()
-    for r, b in baseline.iteritems():
+    for r, b in baseline.items(): # Updated to python3 syntax (team1-change)
         p = probs[r]
         rho, p_value = spearmanr(b, p)
         rating = len(p)
@@ -155,17 +155,17 @@ def eval_pado_mcrae(model_name, experiment_name, evaluation, model=None, print_r
 
         result[r] = round(rho, 4)
         if print_result:
-            print "=" * 60
-            print "ROLE: %s" % r
-            print "-" * 60
-            print "Spearman correlation: %f; 2-tailed p-value: %f" % (rho, p_value)
-            print "Num ratings: %d (%d out of vocabulary)" % (rating, oov)
+            print("=" * 60) # Updated to python3 syntax (team1-change)
+            print(f"ROLE: {r}") # Updated to python3 syntax and f-string (team1-change)
+            print("-" * 60) # Updated to python3 syntax (team1-change)
+            print(f"Spearman correlation: {rho}; 2-tailed p-value: {p_value}") # Updated to python3 syntax and f-string (team1-change)
+            print(f"Num ratings: {rating} ({oov}out of vocabulary)") # Updated to python3 syntax and f-string (team1-change)
 
     rho, p_value = spearmanr(blist, plist)
     
     result['all'] = round(rho, 4)
     if print_result:
-        print "Spearman correlation of %s: %f; 2-tailed p-value: %f" % (evaluation, rho, p_value)
+        print(f"Spearman correlation of {evaluation}: {rho}; 2-tailed p-value: {p_value}") # Updated to python3 syntax and f-string (team1-change)
 
 
     net.set_bias(bias)

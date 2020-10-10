@@ -3,7 +3,7 @@
 import numpy as np
 
 def get_reverse_map(dictionary):
-    return {v:k for k,v in dictionary.iteritems()}
+    return {v:k for k,v in dictionary.items()} # Updated to python3 syntax (team1-change)
 
 def shuffle_arrays(*arrays):
     import numpy as np
@@ -14,5 +14,5 @@ def shuffle_arrays(*arrays):
     
 def input_word_index(vocabulary, input_word, unk_id, warn_unk=False):
     if warn_unk and input_word not in vocabulary:
-        print "Warning: %s not in vocabulary" % input_word
+        print(f"Warning: {input_word} not in vocabulary") # Added parenthesis and updated to f-string (team1-change)
     return vocabulary.get(input_word, unk_id)

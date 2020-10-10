@@ -5,11 +5,12 @@
     Ref: Ottokar Tilk, Event participant modelling with neural networks, EMNLP 2016
 '''
 
-import os, sys, time, cPickle, re
+import os, sys, time, pickle, re # Switching to python3 pickle (team1-change)
 
 import numpy as np
-from keras.optimizers import Adagrad
-from keras.callbacks import Callback, ModelCheckpoint, EarlyStopping, LambdaCallback, TerminateOnNaN, ReduceLROnPlateau
+import tensorflow as tf # Importing tensorflow (team1-change)
+from tf.keras.optimizers import Adagrad # Added tf (team1-change)
+from tf.keras.callbacks import Callback, ModelCheckpoint, EarlyStopping, LambdaCallback, TerminateOnNaN, ReduceLROnPlateau # Added tf (team1-change)
 
 # Configuration of environment
 # SRC_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -30,7 +31,7 @@ MODEL_PATH = config.MODEL_VERSION
 def run(experiment_name, model_name, load_previous, learning_rate, batch_size, samples_per_epoch, epochs, print_after_batches, 
     save_after_steps, learning_rate_decay, L1_reg, L2_reg, n_factors_emb, n_hidden, using_dropout, dropout_rate, loss_weights):
     
-    print 'Meta parameters: '
+    print('Meta parameters: ') # Updated to python3 syntax (team1-change)
     print('experiment_name: ', experiment_name)
     print('learning_rate: ', learning_rate)
     print('batch_size: ', batch_size)
@@ -41,27 +42,27 @@ def run(experiment_name, model_name, load_previous, learning_rate, batch_size, s
     print('using_dropout: ', using_dropout)
     print('dropout_rate: ', dropout_rate)
     print('loss_weights: ', loss_weights)
-    print ''
+    print('') # Updated to python3 syntax (team1-change)
 
-    start_time = time.clock()
+    start_time = time.process_time() # Updated to python3 function since clock now deprecated (team1-change)
 
-    experiment_name_prefix = "%s_" % experiment_name
+    experiment_name_prefix = f'{experiment_name}_' # Updated to python3 f string
     tmp_exp_name = experiment_name_prefix + "temp"
     final_exp_name = experiment_name_prefix + "final"
     e27_exp_name = experiment_name_prefix + "e27"
 
     with open(DATA_PATH + "description", 'rb') as data_file:
-        description = cPickle.load(data_file)
-        print description.keys()
+        description = pickle.load(data_file) # Switching to python3 pickle (team1-change)
+        print(description.keys()) # Updated to python3 syntax (team1-change)
         word_vocabulary = description['word_vocabulary']
         role_vocabulary = description['role_vocabulary']
         unk_word_id = description['NN_unk_word_id']
         unk_role_id = description['unk_role_id']
         missing_word_id = description['NN_missing_word_id']
 
-        print (unk_word_id, unk_role_id, missing_word_id)
+        print(unk_word_id, unk_role_id, missing_word_id)
     
-    print '... building the model'
+    print('... building the model') # Updated to python3 syntax (team1-change)
 
     rng = np.random
     
@@ -73,7 +74,7 @@ def run(experiment_name, model_name, load_previous, learning_rate, batch_size, s
 
     adagrad = Adagrad(lr=learning_rate, epsilon=1e-08, decay=0.0)
 
-    if re.search('NNRF', model_name):
+    if re.search('NNRF', model_name): # QUESTION: Wouldn't this improperly call the wrong function if the model_name is NNRF_ResROFA? (team1-change)
         model = NNRF(n_word_vocab, n_role_vocab, 
             n_factors_emb, 512, n_hidden, word_vocabulary, role_vocabulary, unk_word_id, unk_role_id, missing_word_id, 
             using_dropout, dropout_rate, optimizer=adagrad, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
@@ -86,7 +87,7 @@ def run(experiment_name, model_name, load_previous, learning_rate, batch_size, s
         
     model.summary()
 
-    print model.model.metrics_names
+    print(model.model.metrics_names) # Updated to python3 syntax (team1-change)
 
     epoch = 0
     max_output_length = 0
@@ -159,21 +160,18 @@ def run(experiment_name, model_name, load_previous, learning_rate, batch_size, s
             epoch_n = len(self.epoch)
             if batch_n % print_after_batches == 0:
                 elapsed_time = time.clock() - self.epoch_start
-                output = "batch %d; %d samples; %.1f sps; " % (
-                    batch_n, 
-                    batch_n * batch_size, 
-                    batch_n * batch_size / (elapsed_time + 1e-32))
-                print output
+                output = f"batch {batch_n}; {batch_n * batch_size} samples; {(batch_n * batch_size / (elapsed_time + 1e-32)):.1f} sps; " # Updated to python3 f string
+                print(output) # Updated to python3 syntax (team1-change)
             if batch_n % save_after_steps == 0:
                 model.save(MODEL_PATH, tmp_exp_name, model_name, learning_rate, self.history, self.best_validation_cost, self.best_epoch, epoch_n)
-                print "Temp model saved! "
+                print("Temp model saved! ") # Updated to python3 syntax (team1-change)
 
         def on_epoch_end(self, epoch, logs=None):
             epoch_n = epoch + 1
             logs = logs or {}
             self.epoch.append(epoch_n)
             
-            print 'Validating...'
+            print('Validating...') # Updated to python3 syntax (team1-change)
             valid_result = model.model.evaluate_generator(
                     generator = generator(DATA_PATH + "NN_dev", model_name, unk_word_id, unk_role_id, missing_word_id, 
                         role_vocabulary, random=False, batch_size=batch_size),
@@ -182,7 +180,7 @@ def run(experiment_name, model_name, load_previous, learning_rate, batch_size, s
                     workers = 1, 
                     pickle_safe = False
                 )
-            print ('validate_result', valid_result)
+            print('validate_result', valid_result)
 
             for i, m in enumerate(model.model.metrics_names):
                 logs['valid_' + m] = valid_result[i]
@@ -199,18 +197,18 @@ def run(experiment_name, model_name, load_previous, learning_rate, batch_size, s
                 self.history.setdefault(k, []).append(v)
 
             if epoch_n > 1 and self.history['valid_loss'][-1] < self.history['valid_loss'][-2]:
-                print "Best model saved! "
+                print("Best model saved! ") # Updated to python3 syntax (team1-change)
                 self.best_validation_cost = np.min(np.array(self.history['valid_loss']))
                 self.best_epoch = np.argmin(np.array(self.history['valid_loss'])) + 1
                 model.save(MODEL_PATH, final_exp_name, model_name, learning_rate, self.history, self.best_validation_cost, self.best_epoch, epoch_n)
-                print ('best_validation_cost, best_epoch, epoch_n', self.best_validation_cost, self.best_epoch, epoch_n)
+                print('best_validation_cost, best_epoch, epoch_n', self.best_validation_cost, self.best_epoch, epoch_n)
                 for k, v in self.history.items():
-                    print k, v
+                    print(k, v) # Updated to python3 syntax (team1-change)
 
             if epoch_n ==  27:
                 model.save(MODEL_PATH, experiment_name, model_name, learning_rate, self.history, self.best_validation_cost, self.best_epoch, epoch_n)
 
-            print "Current model saved! "
+            print("Current model saved! ") # Updated to python3 syntax (team1-change)
             model.save(MODEL_PATH, experiment_name, model_name, learning_rate, self.history, self.best_validation_cost, self.best_epoch, epoch_n)
 
 
@@ -224,8 +222,8 @@ def run(experiment_name, model_name, load_previous, learning_rate, batch_size, s
     reduce_lr = ReduceLROnPlateau(monitor='valid_loss', factor=0.1,
               patience=3, min_lr=0.001)
 
-    print 'Training...'
-    train_start = time.clock()
+    print('Training...') # Updated to python3 syntax (team1-change)
+    train_start = time.process_time() # Updated to python3 function since clock now deprecated (team1-change)
 
     model.model.fit_generator(
         generator = generator(DATA_PATH + "NN_train", model_name, unk_word_id, unk_role_id, missing_word_id, 
@@ -238,16 +236,16 @@ def run(experiment_name, model_name, load_previous, learning_rate, batch_size, s
         pickle_safe = pickle_safe,
         callbacks = [callback_container, stopper, naNChecker, reduce_lr]
     )
-    print callback_container.epoch
+    print(callback_container.epoch) # Updated to python3 syntax (team1-change)
     for k, v in callback_container.history.items():
-        print k, v
+        print(k, v) # Updated to python3 syntax (team1-change)
         
-    train_end = time.clock()
-    print 'train and validate time: %f, sps: %f' % (train_end - train_start, train_steps * batch_size / (train_end - train_start))
+    train_end = time.process_time() # Updated to python3 function since clock now deprecated (team1-change)
+    print(f'train and validate time: {train_end - train_start}, sps: {train_steps * batch_size / (train_end - train_start)}') # Updated to python3 syntax and f string (team1-change)
 
 
-    print 'Testing...'
-    test_start = time.clock()
+    print('Testing...') # Updated to python3 syntax (team1-change)
+    test_start = time.process_time() # Updated to python3 function since clock now deprecated (team1-change)
 
     description_best = model_builder.load_description(MODEL_PATH, experiment_name)
     model.load(MODEL_PATH, experiment_name, description_best)
@@ -260,16 +258,16 @@ def run(experiment_name, model_name, load_previous, learning_rate, batch_size, s
             workers = 1, 
             pickle_safe = False
         )
-    print ('test_result', test_result)
+    print('test_result', test_result)
 
-    test_end = time.clock()
-    print 'test time: %f, sps: %f' % (test_end - test_start, test_steps * batch_size / (test_end - test_start))
+    test_end = time.process_time() # Updated to python3 function since clock now deprecated (team1-change)
+    print(f'test time: {test_end - test_start}, sps: {test_steps * batch_size / (test_end - test_start)}') # Updated to python3 syntax and f string (team1-change)
 
 
-    end_time = time.clock()
-    print "Total running time %.2fh" % ((end_time - start_time) / 3600.)
+    end_time = time.process_time() # Updated to python3 function since clock now deprecated (team1-change)
+    print(f"Total running time {((end_time - start_time) / 3600.):.2f}") # Updated to python3 syntax and f string (team1-change)
 
-    print 'Optimization complete. Best validation cost of %f obtained at epoch %i' % (callback_container.best_validation_cost, callback_container.best_epoch)
+    print(f'Optimization complete. Best validation cost of {callback_container.best_validation_cost} obtained at epoch {callback_container.best_epoch}') # Updated to python3 syntax and f string (team1-change)
 
 
 

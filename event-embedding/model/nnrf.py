@@ -6,11 +6,12 @@
 '''
 
 import numpy as np
-from keras import backend as K
-from keras.layers import Input, Embedding, Dropout, Dense, Lambda, Multiply, Masking, Add
-from keras.initializers import glorot_uniform
-from keras.layers.advanced_activations import PReLU
-from keras.models import Model
+import tensorflow as tf # Importing tensorflow (team1-change)
+from tf.keras import backend as K # Added tf (team1-change)
+from tf.keras.layers import Input, Embedding, Dropout, Dense, Lambda, Multiply, Masking#,Add # Added tf, commented out Add since unused (team1-change)
+from tf.keras.initializers import glorot_uniform # Added tf (team1-change)
+from tf.keras.layers.advanced_activations import PReLU # Added tf (team1-change)
+from tf.keras.models import Model, load_model # Added tf (team1-change)
 
 from embeddings import role_based_word_embedding
 from layers import target_word_hidden
@@ -31,9 +32,9 @@ class NNRF(GenericModel):
         self.input_length = n_role_vocab - 1
 
         # each input is a fixed window of frame set, each word correspond to one role
-        input_words = Input(shape=(self.input_length, ), dtype='int32', name='input_words')
-        input_roles = Input(shape=(self.input_length, ), dtype='int32', name='input_roles')
-        target_role = Input(shape=(1, ), dtype='int32', name='target_role')
+        input_words = Input(shape=(self.input_length, ), dtype=tf.uint32, name='input_words') # Switched dtype to tf specific (team1-change)
+        input_roles = Input(shape=(self.input_length, ), dtype=tf.uint32, name='input_roles') # Switched dtype to tf specific (team1-change)
+        target_role = Input(shape=(1, ), dtype=tf.uint32, name='target_role') # Switched dtype to tf specific (team1-change)
 
         # role based embedding layer
         embedding_layer = role_based_word_embedding(input_words, input_roles, n_word_vocab, n_role_vocab, glorot_uniform(), 
@@ -138,7 +139,7 @@ class NNRF(GenericModel):
             (Only for reference, can be removed.)
         """
         top_words_lists = self.top_words(i_w, i_r, t_r, topN, batch_size, verbose)
-        print type(top_words_lists)
+        print(type(top_words_lists)) # Updated to python3 syntax (team1-change)
         result = []
         for i in range(batch_size):
             top_words_list = top_words_lists[i]

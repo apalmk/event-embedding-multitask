@@ -10,8 +10,9 @@
 
 import numpy as np
 
-from keras import backend as K
-from keras.layers import Embedding, Dropout, Dense, Lambda, Multiply, Masking
+import tensorflow as tf # Importing tensorflow (team1-change)
+# from tf.keras import backend as K # Added tf, commented out since unused (team1-change)
+from tf.keras.layers import Embedding, Dropout, Dense, Multiply#, Masking, Lambda # Added tf, commented out unused functions (team1-change)
 
 
 
@@ -63,11 +64,11 @@ def role_based_word_embedding(input_words, input_roles, n_word_vocab, n_role_voc
 
     if using_dropout:
         # Drop-out layer after embeddings
-        word_embedding = Dropout(dropout_rate)(word_embedding)
-        role_embedding = Dropout(dropout_rate)(role_embedding)
+        word_embedding = Dropout(dropout_rate)(word_embedding) # QUESTION: why is dropout applied to embeddings? (team1-change)
+        role_embedding = Dropout(dropout_rate)(role_embedding) # QUESTION: why is dropout applied to embeddings? (team1-change
 
     # hidden units after combining 2 embeddings; shape is the same with embedding
-    embedding = Multiply()([word_embedding, role_embedding])
+    embedding = Multiply()([word_embedding, role_embedding]) # QUESTION: why multiply instead of concatenating? (team1-change)
 
     return embedding
 
@@ -124,7 +125,7 @@ def factored_embedding(input_words, input_roles, n_word_vocab, n_role_vocab, emb
         role_embedding = Dropout(dropout_rate)(role_embedding)
 
     # hidden units after combining 2 embeddings; shape is the same with embedding
-    hidden = Multiply(name='multiply_composition')([word_embedding, role_embedding])
+    hidden = Multiply(name='multiply_composition')([word_embedding, role_embedding]) # QUESTION: why multiply instead of concatenating? (team1-change)
 
     # fully connected layer, output shape is (batch_size, input_length, n_hidden)
     embedding = Dense(n_hidden, 
