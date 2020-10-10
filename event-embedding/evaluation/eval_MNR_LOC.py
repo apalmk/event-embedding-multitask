@@ -2,10 +2,11 @@
 
 import os
 import sys
-import time
-import cPickle
-import gzip
-import random
+# import time # Commenting out since unused (team1-change)
+# import pickle # Commenting out since unused and switching to python3 pickle (team1-change)
+# import gzip # Commenting out since unused (team1-change)
+# import random # Commenting out since unused (team1-change)
+
 
 import numpy
 from scipy.stats import spearmanr
@@ -39,7 +40,7 @@ def eval_MNR_LOC(model_name, experiment_name, evaluation, model=None, print_resu
     bias = net.set_0_bias()
 
     if print_result:
-        print net.role_vocabulary
+        print(net.role_vocabulary) # Updated to python3 syntax (team1-change)
 
     tr_map = {
         "ARG2": "A2",
@@ -68,8 +69,8 @@ def eval_MNR_LOC(model_name, experiment_name, evaluation, model=None, print_resu
     r_i = net.role_vocabulary["V"]
 
     if print_result:
-        print eval_data_file, evaluation
-        print "="*60
+        print(eval_data_file, evaluation) # Updated to python3 syntax (team1-change)
+        print("="*60) # Updated to python3 syntax (team1-change)
 
     with open(eval_data_file, 'r') as f, \
          open(result_file, 'w') as f_out:
@@ -99,7 +100,7 @@ def eval_MNR_LOC(model_name, experiment_name, evaluation, model=None, print_resu
 
             if tw_i == net.unk_word_id:
                 oov_count += 1
-                print w, tw
+                print(w, tw) # Updated to python3 syntax (team1-change)
                 f_out.write(line + "\tnan\n")
                 continue
 
@@ -126,8 +127,8 @@ def eval_MNR_LOC(model_name, experiment_name, evaluation, model=None, print_resu
     rating = len(probs)
 
     if print_result:
-        print "Spearman correlation: %f; 2-tailed p-value: %f" % (rho, p_value)
-        print "Num ratings: %d (%d out of vocabulary)" % (rating, oov_count)
+        print(f"Spearman correlation: {rho}; 2-tailed p-value: {p_value}") # Updated to python3 syntax and f-string (team1-change)
+        print(f"Num ratings: {rating} ({oov_count} out of vocabulary)") # Updated to python3 syntax and f-string (team1-change)
     
     net.set_bias(bias)
     
@@ -150,8 +151,8 @@ if __name__ == "__main__":
     r, p, oov_count, probs, baseline = eval_MNR_LOC(model_name, experiment_name, 'AM-MNR', skip_header=True)
     r2, p2, oov_count2, probs2, baseline2 = eval_MNR_LOC(model_name, experiment_name, 'AM-LOC')
 
-    print "="*60 + "\nTOTAL:"
+    print("="*60 + "\nTOTAL:") # Updated to python3 syntax (team1-change)
     rho, p_value = spearmanr(baseline + baseline2, probs + probs2)
-    print "Spearman correlation: %f; 2-tailed p-value: %f" % (rho, p_value)
-    print "Num ratings: %d (%d out of vocabulary)" % (len(probs + probs2), oov_count + oov_count2)
+    print(f"Spearman correlation: {rho}; 2-tailed p-value: {p_value}") # Updated to python3 syntax and f-string (team1-change)
+    print(f"Num ratings: {len(probs + probs2)} ({oov_count + oov_count2} out of vocabulary)") # Updated to python3 syntax and f-string (team1-change)
 

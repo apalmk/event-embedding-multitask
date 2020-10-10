@@ -3,10 +3,10 @@
 
 import os
 import sys
-import time
-import cPickle
-import gzip
-import random
+# import time # Commenting out since unused (team1-change)
+# import pickle # Commenting out since unused and switching to python3 pickle (team1-change)
+# import gzip # Commenting out since unused (team1-change)
+# import random # Commenting out since unused (team1-change)
 
 import numpy
 from scipy.stats import spearmanr
@@ -44,7 +44,7 @@ def eval_greenberg(model_name, experiment_name, evaluation, model=None, print_re
     bias = net.set_0_bias()
 
     if print_result:
-        print net.role_vocabulary
+        print(net.role_vocabulary) # Updated to python3 syntax (team1-change)
 
     eval_data_file = os.path.join(RV_EVAL_PATH, evaluation + '.txt')
 
@@ -60,8 +60,8 @@ def eval_greenberg(model_name, experiment_name, evaluation, model=None, print_re
     y_r_i = numpy.asarray([tr_i], dtype=numpy.int64)
 
     if print_result:
-        print eval_data_file
-        print "="*60
+        print(eval_data_file) # Updated to python3 syntax (team1-change)
+        print("="*60) # Updated to python3 syntax (team1-change)
 
     with open(eval_data_file, 'r') as f, \
          open(result_file, 'w') as f_out:
@@ -82,7 +82,7 @@ def eval_greenberg(model_name, experiment_name, evaluation, model=None, print_re
 
             if tw_i == net.unk_word_id:
                 oov_count += 1
-                print w, tr, tw
+                print(w, tr, tw) # Updated to python3 syntax (team1-change)
                 f_out.write(line + "\tnan\n")
                 continue
             
@@ -108,8 +108,8 @@ def eval_greenberg(model_name, experiment_name, evaluation, model=None, print_re
     
     rho, p_value = spearmanr(baseline, probs)
     if print_result:
-        print "Spearman correlation of %s: %f; 2-tailed p-value: %f" % (evaluation, rho, p_value)
-        print "Num ratings: %d (%d out of vocabulary)" % (len(probs), oov_count)
+        print(f"Spearman correlation of {evaluation}: {rho}; 2-tailed p-value: {p_value}") # Updated to python3 syntax and f-string (team1-change)
+        print(f"Num ratings: {len(probs)} ({oov_count} out of vocabulary)") # Updated to python3 syntax and f-string (team1-change)
     
     net.set_bias(bias)
     
@@ -125,9 +125,9 @@ def eval_greenberg_all(model_name, experiment_name, model=None, print_result=Tru
     oov = oov_count + oov_count2
 
     if print_result:
-        print "="*60 + "\nTOTAL:"
-        print "Spearman correlation: %f; 2-tailed p-value: %f" % (rho, p_value)
-        print "Num ratings: %d (%d out of vocabulary)" % (rating, oov)
+        print("="*60 + "\nTOTAL:") # Updated to python3 syntax (team1-change)
+        print(f"Spearman correlation: {rho}; 2-tailed p-value: {p_value}") # Updated to python3 syntax and f-string (team1-change)
+        print(f"Num ratings: {rating} ({oov} out of vocabulary)") # Updated to python3 syntax and f-string (team1-change)
 
     return (r2, p2, oov_count2, r, p, oov_count, rho, p_value, oov)
 
